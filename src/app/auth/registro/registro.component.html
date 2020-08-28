@@ -1,0 +1,28 @@
+<div class="center">
+  <div class="cards">
+    <div class="header">
+      <h1>Acesso</h1>
+    </div>
+    <div class="body">
+      <form [formGroup]="formRegister">
+        <div class="md-form">
+          <input mdbInput type="text" name="text" id="form1" class="form-control" formControlName="name">
+          <label for="form1" class="">Name</label>
+        </div>
+        <div class="md-form">
+          <input mdbInput type="email" name="text" id="form1" class="form-control" formControlName="email">
+          <label for="form1" class="">E-mail</label>
+        </div>
+        <div class="md-form">
+          <input mdbInput type="password" name="text" id="form1" class="form-control" formControlName="password">
+          <label for="form1" class="">Password</label>
+        </div>
+      </form>
+    </div>
+    <div class="footer">
+      <button mdbBtn type="button" color="elegant" mdbWavesEffect>Cancel</button>
+      <button mdbBtn type="button" color="unique" *ngIf="!loading" (click)="onSubmit()" [disabled]="formRegister.invalid" mdbWavesEffect>Crear Cuenta</button>
+      <button mdbBtn type="button" color="unique" *ngIf="loading" (click)="onSubmit()" [disabled]="true" mdbWavesEffect>Espere...</button>
+    </div>
+  </div>
+</div>
