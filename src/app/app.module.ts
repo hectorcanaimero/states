@@ -1,3 +1,4 @@
+import { DashboardModule } from './dashboard/dashboard.module';
 import { AuthModule } from './auth/auth.module';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
@@ -18,18 +19,15 @@ import { AppComponent } from './app.component';
 import { appReducers } from './app.reducers';
 import { APP_ROUTE } from './app.routes';
 
-import { DashboardComponent } from './pages/dashboard/dashboard.component';
 
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    DashboardComponent
-  ],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     APP_ROUTE,
     AuthModule,
+    DashboardModule,
     MDBBootstrapModule.forRoot(),
     BrowserAnimationsModule,
     AngularFireModule.initializeApp(environment.fireConfig),

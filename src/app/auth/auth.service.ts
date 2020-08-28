@@ -4,10 +4,13 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Store } from '@ngrx/store';
 import Swal from 'sweetalert2'
+import { Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { User } from './user.model';
 import { AppState } from '../app.reducers';
 import * as ui from '../shared/states/ui.accions';
+import * as auth from './auth.actions';
 
 
 @Injectable({
@@ -16,7 +19,9 @@ import * as ui from '../shared/states/ui.accions';
 
 export class AuthService {
 
-  private user: User
+  private user: User;
+  userSubscription: Subscription;
+
 
   constructor(
     private afAuth: AngularFireAuth,
@@ -26,7 +31,19 @@ export class AuthService {
   ) { }
 
   initAuthListener() {
-
+    this.afAuth.authState.subscribe( (fbUser: firebase.User) => {
+      if ( fbUser ) {
+        this.userSubscription = this.afDb.doc(`${ fbUser.uid }/user`).valueChanges()
+        .subscribe( (usuarioObj: any) => {
+          const newUser = new User( usuarioObj );
+          this.store.dispatch( new auth.SetUserAction(newUser) );
+          this.user = newUser;
+        });
+      } else {
+        this.user = null;
+        this.userSubscription.unsubscribe();
+      }
+    });
   }
 
   createUser(name: string, email: string, password: string) {
@@ -51,8 +68,31 @@ export class AuthService {
     });
   }
 
-  signIn() {}
+  signIn( email: string, password: string ) {
+    this.store.dispatch(new ui.ActivarLoadingAction()  );
+    this.afAuth.signInWithEmailAndPassword(email, password)
+    .then( resp => {
+      this.store.dispatch( new ui.DesactivarLoadingAction()  );
+      this.router.navigate(['/']);
+    })
+    .catch( error => {
+      this.store.dispatch(new ui.DesactivarLoadingAction());
+      Swal.fire('Error en el login', error.message, 'error');
+    });
+  }
+
   signOut() {}
-  isAuth() {}
-  getUser() {}
+  isAuth() {
+    return this.afAuth.authState
+    .pipe(
+      map( fbUser => {
+        if ( fbUser == null ) {
+          this.router.navigate(['/login']);
+        }
+        return fbUser != null;
+      })
+    );
+  }
+
+  getUser() { return { ...this.user }; }
 }

@@ -20,7 +20,7 @@
       </form>
     </div>
     <div class="footer">
-      <button mdbBtn type="button" color="elegant" mdbWavesEffect>Cancel</button>
+      <button mdbBtn type="reset" color="elegant" mdbWavesEffect>Cancel</button>
       <button mdbBtn type="button" color="unique" *ngIf="!loading" (click)="onSubmit()" [disabled]="formRegister.invalid" mdbWavesEffect>Crear Cuenta</button>
       <button mdbBtn type="button" color="unique" *ngIf="loading" (click)="onSubmit()" [disabled]="true" mdbWavesEffect>Espere...</button>
     </div>
